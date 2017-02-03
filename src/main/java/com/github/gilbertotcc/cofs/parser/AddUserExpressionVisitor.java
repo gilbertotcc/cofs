@@ -9,10 +9,12 @@ public class AddUserExpressionVisitor extends CofsBaseVisitor<User> {
 	@Override
 	public User visitAddUserExpression(AddUserExpressionContext ctx) {
 		String userId = ctx.userId.getText();
-		int credit = ctx.credit.isEmpty() ? 0 : 0; // FIXME
 		
-		// TODO Auto-generated method stub
-		
-		return new User(userId, credit);
+		if (ctx.credit.isEmpty()) {
+			return new User(userId, 0);
+		} else {
+			int credit = ctx.credit.accept(new CreditExpressionVisitor());
+			return new User(userId, credit);
+		}
 	}
 }
