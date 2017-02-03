@@ -28,7 +28,7 @@ public class CofsProgramVisitor extends CofsBaseVisitor<List<User>> {
 				users.clear();
 				users.addAll(newTransaction.commit());
 			} else {
-				throw new RuntimeException("Found unknown statement");
+				throw new RuntimeException("Uknown statement found");
 			}
 		});
 		

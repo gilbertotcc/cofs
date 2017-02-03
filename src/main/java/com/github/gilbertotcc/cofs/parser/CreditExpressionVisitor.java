@@ -7,6 +7,7 @@ public class CreditExpressionVisitor extends CofsBaseVisitor<Integer> {
 	
 	@Override
 	public Integer visitCredit_expression(Credit_expressionContext ctx) {
-		return Integer.parseInt(ctx.Int().getText());
+		String text = ctx.Int().getText();
+		return Integer.parseInt(text);
 	}
 }
