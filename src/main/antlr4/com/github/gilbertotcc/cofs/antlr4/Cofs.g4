@@ -30,11 +30,11 @@ credit_expression
  */
 
 add_transaction_expression
-	: ADD_TRANSACTION_COMMAND offeror=UserId TransactionToSymbol ( recipients=recipients_list ) # AddTransactionExpression
+	: ADD_TRANSACTION_COMMAND offeror=UserId TransactionToSymbol recipients=recipients_list # AddTransactionExpression
 	;
 
 recipients_list
-	: ( UserId ( ',' UserId )* )
+	: UserId ( ',' UserId )*
 	;
 
 

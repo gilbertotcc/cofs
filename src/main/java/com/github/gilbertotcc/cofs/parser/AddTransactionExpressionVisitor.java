@@ -1,6 +1,5 @@
 package com.github.gilbertotcc.cofs.parser;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,15 +19,15 @@ public class AddTransactionExpressionVisitor extends CofsBaseVisitor<Transaction
 		this.userList = userList;
 	}
 
-	public AddTransactionExpressionVisitor() {
-		this(Collections.emptyList());
-	}
-
 	@Override
 	public Transaction visitAddTransactionExpression(AddTransactionExpressionContext ctx) {
-		User offeror = findUserById(ctx.offeror.getText());
-		List<User> recipients = parseRecipientList(ctx.recipients);
-		return new Transaction(offeror, recipients);
+		try {
+			User offeror = findUserById(ctx.offeror.getText());
+			List<User> recipients = parseRecipientList(ctx.recipients);
+			return new Transaction(offeror, recipients);
+		} catch (Throwable t) {
+			throw new ParsingException(ParsingException.ErrorEnums.MALFORMED_ADD_TRANSACTION, t);
+		}
 	}
 
 	private List<User> parseRecipientList(Recipients_listContext ctx) {
