@@ -8,7 +8,8 @@ import org.junit.Test;
 import com.github.gilbertotcc.cofs.antlr4.CofsLexer;
 import com.github.gilbertotcc.cofs.antlr4.CofsParser;
 import com.github.gilbertotcc.cofs.parser.CreditExpressionVisitor;
-import com.github.gilbertotcc.cofs.parser.ParsingException;
+import com.github.gilbertotcc.cofs.parser.ParserErrorListener;
+import com.github.gilbertotcc.cofs.parser.ParserException;
 
 import junit.framework.TestCase;
 
@@ -20,7 +21,11 @@ public class CreditExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldSuccess() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(WELLFORMED_CREDIT_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		ParseTree tree = parser.credit_expression();
 
@@ -31,19 +36,17 @@ public class CreditExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldFail() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(MALFORMED_CREDIT_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
-
-		ParseTree tree = parser.credit_expression();
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 		
 		try {
-			new CreditExpressionVisitor().visit(tree);
+			parser.credit_expression();
 			fail();
-		} catch (Throwable t) {
-			assertTrue(t instanceof ParsingException);
-			assertEquals(
-					((ParsingException) t).getErrorCode(),
-					ParsingException.ErrorEnums.MALFORMED_CREDIT.code()
-					);
+		} catch(ParserException e) {
+			assertTrue(true);
 		}
 	}
 }

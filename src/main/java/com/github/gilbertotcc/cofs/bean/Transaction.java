@@ -43,4 +43,20 @@ public class Transaction {
 	public TimeTick getTime() {
 		return time;
 	}
+	
+	@Override
+	public String toString() {
+		final String pattern = "@%d: %s offers to %s";
+		return String.format(pattern, time.getTime(), offeror, userListToString(recipients));
+	}
+	
+	private static String userListToString(List<User> userList) {
+		StringBuilder sb = new StringBuilder();
+		String separator = "";
+		for (User u : userList) {
+			sb.append(separator).append(u.getUserId());
+			separator = ",";
+		}
+		return sb.toString();
+	}
 }

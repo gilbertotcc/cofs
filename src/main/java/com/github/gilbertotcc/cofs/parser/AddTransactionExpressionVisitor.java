@@ -3,7 +3,6 @@ package com.github.gilbertotcc.cofs.parser;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.github.gilbertotcc.cofs.antlr4.CofsBaseVisitor;
 import com.github.gilbertotcc.cofs.antlr4.CofsParser.AddTransactionExpressionContext;
@@ -21,18 +20,15 @@ public class AddTransactionExpressionVisitor extends CofsBaseVisitor<Transaction
 
 	@Override
 	public Transaction visitAddTransactionExpression(AddTransactionExpressionContext ctx) {
-		try {
-			User offeror = findUserById(ctx.offeror.getText());
-			List<User> recipients = parseRecipientList(ctx.recipients);
-			return new Transaction(offeror, recipients);
-		} catch (Throwable t) {
-			throw new ParsingException(ParsingException.ErrorEnums.MALFORMED_ADD_TRANSACTION, t);
-		}
+		User offeror = findUserById(ctx.offeror.getText());
+		List<User> recipients = parseRecipientList(ctx.recipients);
+		return new Transaction(offeror, recipients);
 	}
 
 	private List<User> parseRecipientList(Recipients_listContext ctx) {
-		Stream<User> recipientStream = ctx.UserId().stream().map(userIdToken -> findUserById(userIdToken.getText()));
-		return recipientStream.collect(Collectors.toList());
+		return ctx.UserId().stream()
+				.map(userIdToken -> findUserById(userIdToken.getText()))
+				.collect(Collectors.toList());
 	}
 
 	private User findUserById(String userId) {
@@ -44,6 +40,10 @@ public class AddTransactionExpressionVisitor extends CofsBaseVisitor<Transaction
 			u = userId.equals(user.getUserId()) ? user : null;
 		}
 
-		return u;
+		if (u != null) {
+			return u;
+		}
+		
+		throw new ParserException(String.format("User %s not found", userId));
 	}
 }

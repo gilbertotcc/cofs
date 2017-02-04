@@ -10,7 +10,8 @@ import com.github.gilbertotcc.cofs.antlr4.CofsParser;
 import com.github.gilbertotcc.cofs.bean.TimeTick;
 import com.github.gilbertotcc.cofs.bean.User;
 import com.github.gilbertotcc.cofs.parser.AddUserExpressionVisitor;
-import com.github.gilbertotcc.cofs.parser.ParsingException;
+import com.github.gilbertotcc.cofs.parser.ParserErrorListener;
+import com.github.gilbertotcc.cofs.parser.ParserException;
 
 import junit.framework.TestCase;
 
@@ -23,7 +24,11 @@ public class AddUserExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldSuccess() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(WELLFORMED_ADD_USER_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		ParseTree tree = parser.add_user_expression();
 
@@ -38,7 +43,11 @@ public class AddUserExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShortShouldSuccess() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(WELLFORMED_ADD_USER_EXPRESSION_SHORT));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		ParseTree tree = parser.add_user_expression();
 
@@ -53,16 +62,17 @@ public class AddUserExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldFail() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(MALFORMED_ADD_USER_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
-
-		ParseTree tree = parser.add_user_expression();
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		try {
-			User emptyUser = new AddUserExpressionVisitor().visit(tree);
-			assertNull(emptyUser);
-		} catch (Throwable t) {
-			assertTrue(t instanceof ParsingException);
-			assertEquals(((ParsingException) t).getErrorCode(), ParsingException.ErrorEnums.MALFORMED_ADD_USER.code());
+			parser.add_user_expression();
+			fail();
+		} catch(ParserException e) {
+			assertTrue(true);
 		}
 	}
 }

@@ -31,4 +31,10 @@ public class User {
 	public void setLastOffer(TimeTick time) {
 		this.lastOffer = time;
 	}
+
+	@Override
+	public String toString() {
+		final String pattern = "%s (credit=%d, last offer time: %d)";
+		return String.format(pattern, userId, credit, lastOffer.getTime());
+	}
 }

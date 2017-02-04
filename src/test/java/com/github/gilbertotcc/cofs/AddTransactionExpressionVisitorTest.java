@@ -13,7 +13,8 @@ import com.github.gilbertotcc.cofs.bean.TimeTick;
 import com.github.gilbertotcc.cofs.bean.Transaction;
 import com.github.gilbertotcc.cofs.bean.User;
 import com.github.gilbertotcc.cofs.parser.AddTransactionExpressionVisitor;
-import com.github.gilbertotcc.cofs.parser.ParsingException;
+import com.github.gilbertotcc.cofs.parser.ParserErrorListener;
+import com.github.gilbertotcc.cofs.parser.ParserException;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import junit.framework.TestCase;
@@ -26,7 +27,11 @@ public class AddTransactionExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldSuccess() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(WELLFORMED_ADD_TRANSACTION_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		@SuppressWarnings("unchecked")
 		List<User> testUsers = Arrays.asList(new User[] { new User("foo", 0), new User("bar", 0) });
@@ -45,20 +50,17 @@ public class AddTransactionExpressionVisitorTest extends TestCase {
 	@Test
 	public void testParseShouldFail() {
 		CofsLexer lexer = new CofsLexer(new ANTLRInputStream(MALFORMED_ADD_TRANSACTION_EXPRESSION));
+		lexer.removeErrorListeners();
+		lexer.addErrorListener(new ParserErrorListener());
 		CofsParser parser = new CofsParser(new CommonTokenStream(lexer));
-
-		@SuppressWarnings("unchecked")
-		List<User> testUsers = Arrays.asList(new User[] { new User("foo", 0), new User("bar", 0) });
-
-		ParseTree tree = parser.add_transaction_expression();
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ParserErrorListener());
 
 		try {
-			new AddTransactionExpressionVisitor(testUsers).visit(tree);
+			parser.add_transaction_expression();
 			fail();
-		} catch (Throwable t) {
-			assertTrue(t instanceof ParsingException);
-			assertEquals(((ParsingException) t).getErrorCode(),
-					ParsingException.ErrorEnums.MALFORMED_ADD_TRANSACTION.code());
+		} catch (ParserException e) {
+			assertTrue(e instanceof ParserException);
 		}
 	}
 }

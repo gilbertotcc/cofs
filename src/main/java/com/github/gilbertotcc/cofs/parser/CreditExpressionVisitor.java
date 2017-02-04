@@ -7,11 +7,7 @@ public class CreditExpressionVisitor extends CofsBaseVisitor<Integer> {
 
 	@Override
 	public Integer visitCredit_expression(Credit_expressionContext ctx) {
-		try {
-			String text = ctx.Int().getText();
-			return Integer.parseInt(text);
-		} catch (Throwable t) {
-			throw new ParsingException(ParsingException.ErrorEnums.MALFORMED_CREDIT, t);
-		}
+		String text = ctx.Int().getText();
+		return Integer.parseInt(text);
 	}
 }
