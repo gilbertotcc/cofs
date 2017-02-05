@@ -37,7 +37,7 @@ public class AddUserExpressionVisitorTest extends TestCase {
 		User userTest = new AddUserExpressionVisitor().visit(tree);
 		assertEquals(userTest.getUserId(), "foo");
 		assertEquals(userTest.getCredit(), 10);
-		assertEquals(userTest.getLastOffer().getTime(), currentTime.getTime() + 1);
+		assertEquals(userTest.getLastOffer().getTick(), currentTime.getTick() + 1);
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class AddUserExpressionVisitorTest extends TestCase {
 		User userTest = new AddUserExpressionVisitor().visit(tree);
 		assertEquals(userTest.getUserId(), "foo");
 		assertEquals(userTest.getCredit(), 0);
-		assertEquals(userTest.getLastOffer().getTime(), currentTime.getTime() + 1);
+		assertEquals(userTest.getLastOffer().getTick(), currentTime.getTick() + 1);
 	}
 
 	@Test

@@ -35,6 +35,6 @@ public class User {
 	@Override
 	public String toString() {
 		final String pattern = "%s (credit=%d, last offer time: %d)";
-		return String.format(pattern, userId, credit, lastOffer.getTime());
+		return String.format(pattern, userId, credit, lastOffer.getTick());
 	}
 }

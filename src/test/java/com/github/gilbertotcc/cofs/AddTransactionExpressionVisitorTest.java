@@ -44,7 +44,7 @@ public class AddTransactionExpressionVisitorTest extends TestCase {
 		assertEquals(testTransaction.getOfferor().getUserId(), "foo");
 		assertEquals(testTransaction.getRecipients().size(), 1);
 		assertEquals(testTransaction.getRecipients().get(0).getUserId(), "bar");
-		assertEquals(testTransaction.getTime().getTime(), currentTime.getTime() + 1);
+		assertEquals(testTransaction.getTime().getTick(), currentTime.getTick() + 1);
 	}
 
 	@Test

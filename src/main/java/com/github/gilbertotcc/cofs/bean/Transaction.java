@@ -47,7 +47,7 @@ public class Transaction {
 	@Override
 	public String toString() {
 		final String pattern = "@%d: %s offers to %s";
-		return String.format(pattern, time.getTime(), offeror, userListToString(recipients));
+		return String.format(pattern, time.getTick(), offeror, userListToString(recipients));
 	}
 	
 	private static String userListToString(List<User> userList) {

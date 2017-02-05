@@ -57,14 +57,14 @@ public class CofsProgramVisitor extends CofsBaseVisitor<List<User>> {
 	}
 	
 	private static List<User> addUser(User u, List<User> userList) {
-		LOG.log(Level.INFO, "Add user: %s", u.toString());
+		LOG.log(Level.INFO, "Add user: {0}", u.toString());
 		assertIsNewUser(u, userList);
 		userList.add(u);
 		return userList;
 	}
 	
 	private static List<User> commitTransaction(Transaction t) {
-		LOG.log(Level.INFO, "Commit transaction: %s", t.toString());
+		LOG.log(Level.INFO, "Commit transaction: {0}", t.toString());
 		return t.commit();
 	}
 	

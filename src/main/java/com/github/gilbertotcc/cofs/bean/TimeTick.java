@@ -6,10 +6,10 @@ public class TimeTick {
 	
 	private static final AtomicInteger globalTime = new AtomicInteger(0);
 	
-	private final int time;
+	private final int tick;
 	
-	private TimeTick(int time) {
-		this.time = time;
+	private TimeTick(int tick) {
+		this.tick = tick;
 	}
 	
 	public static TimeTick getNext() {
@@ -17,7 +17,7 @@ public class TimeTick {
 		return new TimeTick(currentTime);
 	}
 	
-	public int getTime() {
-		return time;
+	public int getTick() {
+		return tick;
 	}
 }
