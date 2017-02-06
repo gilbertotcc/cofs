@@ -2,7 +2,6 @@ package com.github.gilbertotcc.cofs.core;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +30,6 @@ public class CofsCore {
 	}
 	
 	public List<User> schedule(List<User> users) {
-		return Collections.emptyList(); // TODO
+		return new CofsScheduler().schedule(users);
 	}
 }

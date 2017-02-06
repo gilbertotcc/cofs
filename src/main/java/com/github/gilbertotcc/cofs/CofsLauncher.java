@@ -27,9 +27,9 @@ public class CofsLauncher {
 			commander.parse(args);
 			
 			CofsCore core = new CofsCore();
-			List<User> users = core.loadUsersFromFile(params.getInputFile());
-			//List<User> scheduledUsers = core.schedule(users);
-			printUsers(users);
+			List<User> users = core.loadUsersFromFile(params.getInputFile().get(0)); // FIXME List vs String
+			List<User> scheduledUsers = core.schedule(users);
+			printUsers(scheduledUsers);
 			
 			System.exit(0);
 		} catch (ParameterException e) {
