@@ -36,7 +36,9 @@ public class CofsProgramVisitor extends CofsBaseVisitor<List<User>> {
 				break;
 			case ADD_TRANSACTION_STATEMENT:
 				Transaction t = stmt.accept(new AddTransactionExpressionVisitor(users));
-				users = commitTransaction(t);
+				users = removeTransactionUsers(users, t);
+				List<User> updatedUsers = commitTransaction(t);
+				users.addAll(updatedUsers);
 				break;
 			default:
 				throw new ParserException("Uknown statement found");
@@ -73,5 +75,11 @@ public class CofsProgramVisitor extends CofsBaseVisitor<List<User>> {
 		if (userList.stream().filter(user -> user.getUserId().equals(uId)).count() != 0) {
 			throw new ParserException("Duplicated user: " + uId);
 		}
+	}
+	
+	private static List<User> removeTransactionUsers(List<User> users, Transaction t) {
+		users.remove(t.getOfferor());
+		users.removeAll(t.getRecipients());
+		return users;
 	}
 }
