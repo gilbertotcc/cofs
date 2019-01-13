@@ -40,8 +40,9 @@ public class Parser {
 			setErrorListener(parser, errorListener);
 			
 			ParseTree tree = parser.cofs_program(); // Retrieve the program root element
-			
-			return new CofsProgramVisitor().visit(tree);
+
+			List<User> users = new CofsProgramVisitor().visit(tree);
+			return users;
 		} catch (IOException e) {
 			throw new ParserException("I/O error occured while parsing input", e);
 		} catch (Exception e) {
