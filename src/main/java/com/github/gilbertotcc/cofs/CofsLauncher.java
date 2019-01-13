@@ -1,50 +1,52 @@
 package com.github.gilbertotcc.cofs;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static java.lang.String.format;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
+import java.util.List;
+
 import com.github.gilbertotcc.cofs.bean.User;
-import com.github.gilbertotcc.cofs.commandline.CommandLineParameters;
+import com.github.gilbertotcc.cofs.cli.CliArguments;
+import com.github.gilbertotcc.cofs.cli.CommandLineInterface;
+import com.github.gilbertotcc.cofs.cli.CliErrors;
 import com.github.gilbertotcc.cofs.core.CofsCore;
 import com.github.gilbertotcc.cofs.core.CofsCoreException;
+import io.vavr.control.Validation;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@UtilityClass
 public class CofsLauncher {
-	
-	private static final Logger LOG = Logger.getLogger(CofsLauncher.class.getName());
-	
-	private CofsLauncher() {
-		// ...
-	}
 
 	public static void main(String[] args) {
-		CommandLineParameters params = new CommandLineParameters();
-		JCommander commander = new JCommander(params);
+
+		CommandLineInterface cli = CommandLineInterface.newCommandLineInterface();
+		Validation<CliErrors, CliArguments> maybeCliArguments = cli.parse(args);
+
+		if (maybeCliArguments.isInvalid()) {
+			cli.printlnMessage(format("Error occurred while parsing arguments (%s)", maybeCliArguments.getError().getMessage()));
+			cli.showUsage();
+			System.exit(1);
+		}
 		
 		try {
-			commander.parse(args);
-			
 			CofsCore core = new CofsCore();
-			List<User> users = core.loadUsersFromFile(params.getInputFile().get(0)); // FIXME List vs String
+			List<User> users = core.loadUsersFromFile(maybeCliArguments.get().getFilename().get()); // FIXME List vs String
 			List<User> scheduledUsers = core.schedule(users);
-			printUsers(scheduledUsers);
+			printUsers(scheduledUsers, cli);
 			
 			System.exit(0);
-		} catch (ParameterException e) {
-			LOG.log(Level.FINEST, "Wrong/Missing parameters are given", e);
-			commander.usage();
 		} catch (CofsCoreException e) {
-			LOG.log(Level.FINEST, "Error occured: " + e.getMessage(), e);
-			JCommander.getConsole().println("Error occured: " + e.getMessage());
-		} finally {
+			log.error("Error occurred: " + e.getMessage(), e);
+			cli.printlnMessage("Error occured: " + e.getMessage());
 			System.exit(1);
 		}
 	}
-	
-	private static void printUsers(List<User> users) {
-		JCommander.getConsole().println("Users:");
-		users.forEach(u -> JCommander.getConsole().println(u.toString()));
+
+	private static void printUsers(List<User> users, CommandLineInterface commandLineInterface) {
+		commandLineInterface.printlnMessage("Users:");
+		users.stream()
+				.map(User::toString)
+				.forEach(commandLineInterface::printlnMessage);
 	}
 }
